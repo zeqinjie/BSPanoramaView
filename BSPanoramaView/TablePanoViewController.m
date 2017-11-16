@@ -10,14 +10,14 @@
 #import "PanoTableViewCell.h"
 
 @interface TablePanoViewController () <UITableViewDelegate, UITableViewDataSource>
-
+@property (nonatomic, strong) NSArray *vrimgs;
 @end
 
 @implementation TablePanoViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.vrimgs = @[@"MyArroundVRImg",@"MyArroundVRImg2",@"MyArroundVRImg3"];
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 414, 736)];
     tableView.delegate = self;
     tableView.dataSource = self;
@@ -37,6 +37,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row % 4 == 3) {
         PanoTableViewCell *cell = (PanoTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"PanoTableViewCell"];
+        cell.imgName = self.vrimgs[indexPath.row%3];
         if (!cell) {
             cell = [[PanoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"PanoTableViewCell"];
         }

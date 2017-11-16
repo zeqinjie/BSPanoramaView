@@ -12,5 +12,5 @@
 
 - (void)willBeDisplayed:(NSUInteger)index;
 - (void)didStopDisplayed:(NSUInteger)index;
-
+@property (nonatomic, strong) NSString *imgName;
 @end

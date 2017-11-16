@@ -29,12 +29,13 @@
     return self;
 }
 
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 }
 
 - (void)willBeDisplayed:(NSUInteger)index {
-    [self.panoView setImageWithName:@"test"];
+    [self.panoView setImageWithName:self.imgName.length?self.imgName:@"test"];
 }
 
 - (void)didStopDisplayed:(NSUInteger)index {
