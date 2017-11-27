@@ -7,9 +7,9 @@
 //
 
 #import "BSPanoramaView.h"
-
+#import "SDWebImageManager.h"
 @interface BSPanoramaView ()
-
+#define WS(weakSelf) __weak __typeof(&*self)weakSelf = self;
 #pragma -mark OpenGL 相关属性
 @property (nonatomic, assign) BOOL shouldUnload;               /// 是否需要释放纹理的标记位
 @property (nonatomic, assign) int numIndices;                  /// 索引数
@@ -52,13 +52,35 @@
 }
 
 - (void)setImageWithName:(NSString *)imageName {
+    UIImage *textureImage = [UIImage imageNamed:imageName];
+    [self setImageWithImg:textureImage];
+}
+
+- (void)setImageWithUrl:(NSString *)imageUrl{
+    WS(weakSelf);
+    UIImage *textureImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:imageUrl];
+    if (textureImage) {
+        [self setImageWithImg:textureImage];
+    }else{
+        [[SDWebImageManager sharedManager]downloadImageWithURL:[NSURL URLWithString:imageUrl] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+            
+        } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+            if (image) {
+                [weakSelf setImageWithImg:image];
+            }
+        }];
+    }
+    
+}
+
+- (void)setImageWithImg:(UIImage *)textureImage{
     self.shouldUnload = NO;
     /// 将图片转换成为纹理信息，由于OpenGL的默认坐标系设置在左下角, 而GLKit在左上角, 因此需要转换
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], GLKTextureLoaderOriginBottomLeft, nil];
-    UIImage *textureImage = [UIImage imageNamed:imageName];
     if (textureImage.size.height * textureImage.size.width > 4096.1f * 2048.1f) {
         return ;
     }
+    
     GLKTextureLoader *loader = [[GLKTextureLoader alloc] initWithSharegroup:self.context.sharegroup];
     [loader textureWithCGImage:textureImage.CGImage options:options queue:dispatch_get_main_queue() completionHandler:^(GLKTextureInfo * _Nullable textureInfo, NSError * _Nullable outError) {
         [[PanoramaManager sharedInstance] registerView:self];
@@ -76,6 +98,8 @@
         self.effect.texture2d0.name = textureInfo.name;
     }];
 }
+
+
 
 - (void)unloadImage {
     self.shouldUnload = YES;

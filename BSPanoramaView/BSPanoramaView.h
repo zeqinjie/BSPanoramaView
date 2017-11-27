@@ -48,6 +48,10 @@
  */
 - (void)setImageWithName:(NSString *)imageName;
 
+
+//请教：尝试添加支持url但是有加载不出来  报这个错误 GLKTextureLoaderErrorDomain error 12
+- (void)setImageWithUrl:(NSString *)imageUrl;
+
 /**
  当不再使用时应该释放内存，并且把自己从全局的 PanoramaManager 中移除
  */
