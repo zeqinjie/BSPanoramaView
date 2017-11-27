@@ -35,7 +35,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row % 4 == 3) {
+    if (indexPath.row % 3 == 1) {
         PanoTableViewCell *cell = (PanoTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"PanoTableViewCell"];
         cell.imgName = self.vrimgs[indexPath.row%3];
         if (!cell) {
@@ -55,7 +55,10 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 300;
+    if (indexPath.row % 3 == 1) {
+        return 300;
+    }
+    return 100;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(nonnull UITableViewCell *)cell forRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
